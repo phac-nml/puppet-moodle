@@ -16,7 +16,7 @@ when 'debian'
 end
 
 if apachecmd && command?(apachecmd)
-  results = Facter::Core::Execution.exec("#{apachecmd} -S")
+  results = Facter::Util::Resolution.exec("#{apachecmd} -S")
   results.split("\n").each do |r|
     if r =~ /port/
       vhost_conf = r.strip.split[4].sub(/\(/,'').sub(/:\d+\)/,'')
