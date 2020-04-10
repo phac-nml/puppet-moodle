@@ -11,7 +11,10 @@ define moodle::plugin (
   $www_group                                  = $moodle::www_group,
 ) {
 
-  $plugin_install_dir = "${moodle_install_dir}/${install_subdir}"
+  $plugin_install_dir = $install_subdir ? {
+    /^\//     => $install_subdir,
+    default   => "${moodle_install_dir}/${install_subdir}",
+  }
 
   case $install_provider {
     'http': {
@@ -23,29 +26,47 @@ define moodle::plugin (
         'moodle':         {
           $stripped_version = $plugin_version.split('\.')[0,2].join()
           $git_branch = "MOODLE_${stripped_version}_STABLE"
+          $git_branch = $plugin_version ? {
+            /^\d+\.\d+$/  => "MOODLE_${stripped_version}_STABLE",
+            /^\d\d+$/     => "MOODLE_${stripped_version}_STABLE",
+            default       => $plugin_version,
+          }
         }
         'tag', 'branch':  {
           $git_branch = $plugin_version
         }
       }
-      git::repo { "moodle-${moodle_install_dir}-${name}":
-        target => $plugin_install_dir,
-        source => $download_url,
-        user   => $www_owner,
-        group  => $www_group,
-        mode   => '0755',
-        args   => "-b '${git_branch}' --depth 2",
+      if false {
+        git::repo { "moodle-${moodle_install_dir}-${name}":
+          target => $plugin_install_dir,
+          source => $download_url,
+          user   => $www_owner,
+          group  => $www_group,
+          mode   => '0755',
+          args   => "-b '${git_branch}' --depth 2",
+        }
+      } else {
+        vcsrepo { "moodle-${moodle_install_dir}-${name}":
+          ensure   => 'latest',
+          provider => 'git',
+          path     => $plugin_install_dir,
+          source   => $download_url,
+          revision => $git_branch,
+          depth    => 1,
+          owner    => $www_owner,
+          group    => $www_group,
+        }
       }
     }
   }
 
   # Exclude plugin from main moodle git
-  if $moodle::install_provider == 'git' { # Better would be to use the parent moodle::app resource's install_provider
-      concat::fragment { "git-exclude-${moodle_install_dir}-${name}":
-        target  => "git-exclude-${moodle_install_dir}",
-        content => "/${install_subdir}/",
-        order   => '10',
-      }
+  if $moodle::install_provider == 'git' and $plugin_install_dir =~ "^${moodle_install_dir}" {
+    concat::fragment { "git-exclude-${moodle_install_dir}-${name}":
+      target  => "git-exclude-${moodle_install_dir}",
+      content => "/${install_subdir}/",
+      order   => '10',
+    }
   }
 
 }

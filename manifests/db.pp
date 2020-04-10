@@ -13,7 +13,8 @@ define moodle::db (
   if $create_db {
     mysql_database { "${dbhost}/${dbname}":
       name    => $dbname,
-      charset => 'utf8',
+      charset => 'utf8mb4',
+      collate => 'utf8mb4_unicode_ci',
     }
   }
   if $create_db_user {
