@@ -1,6 +1,6 @@
 {
-  "name": "alanpetersen-moodle",
-  "version": "0.2.0",
+  "name": "cpts-moodle",
+  "version": "0.3.0",
   "author": "alanpetersen, mtkraai",
   "summary": "Manages the Moodle Learning Management System",
   "license": "Apache-2.0",
