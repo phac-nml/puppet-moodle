@@ -1,6 +1,6 @@
 {
   "name": "cpts-moodle",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": "alanpetersen, mtkraai",
   "summary": "Manages the Moodle Learning Management System",
   "license": "Apache-2.0",

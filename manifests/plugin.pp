@@ -37,26 +37,15 @@ define moodle::plugin (
           $git_branch = $plugin_version
         }
       }
-      if false {
-        git::repo { "moodle-${moodle_install_dir}-${name}":
-          target => $plugin_install_dir,
-          source => $download_url,
-          user   => $www_owner,
-          group  => $www_group,
-          mode   => '0755',
-          args   => "-b '${git_branch}' --depth 2",
-        }
-      } else {
-        vcsrepo { "moodle-${moodle_install_dir}-${name}":
-          ensure   => 'latest',
-          provider => 'git',
-          path     => $plugin_install_dir,
-          source   => $download_url,
-          revision => $git_branch,
-          depth    => 1,
-          owner    => $www_owner,
-          group    => $www_group,
-        }
+      vcsrepo { "moodle-${moodle_install_dir}-${name}":
+        ensure   => 'latest',
+        provider => 'git',
+        path     => $plugin_install_dir,
+        source   => $download_url,
+        revision => $git_branch,
+        depth    => 1,
+        owner    => $www_owner,
+        group    => $www_group,
       }
     }
   }
@@ -76,9 +65,6 @@ define moodle::plugin (
       cwd         => $plugin_install_dir,
       refreshonly => true,
     }
-    if defined(Git::Repo["moodle-${moodle_install_dir}-${name}"]) {
-      Git::Repo["moodle-${moodle_install_dir}-${name}"] ~> Exec["moodle-plugin-${name}-install"]
-    }
     if defined(Vcsrepo["moodle-${moodle_install_dir}-${name}"]) {
       Vcsrepo["moodle-${moodle_install_dir}-${name}"] ~> Exec["moodle-plugin-${name}-install"]
     }
@@ -87,9 +73,6 @@ define moodle::plugin (
     exec { "moodle-plugin-${name}-exec":
       # Default to working directory = install directory; force to refresh only.
       * => {cwd => $plugin_install_dir,} + $install_exec + {refreshonly => true,},
-    }
-    if defined(Git::Repo["moodle-${moodle_install_dir}-${name}"]) {
-      Git::Repo["moodle-${moodle_install_dir}-${name}"] ~> Exec["moodle-plugin-${name}-exec"]
     }
     if defined(Vcsrepo["moodle-${moodle_install_dir}-${name}"]) {
       Vcsrepo["moodle-${moodle_install_dir}-${name}"] ~> Exec["moodle-plugin-${name}-exec"]

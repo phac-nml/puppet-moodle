@@ -26,8 +26,6 @@ define moodle::app (
   Hash $plugins      = {},
 ) {
 
-  $git_type = 'vcsrepo' # 'foreman' or 'vcsrepo'
-
   $install_dir_clean = regsubst($install_dir, /\//, '_', 'G')
 
   if !($install_dir =~ /\/moodle$/) {
@@ -86,26 +84,15 @@ define moodle::app (
         default       => $moodle_version,
       }
 
-      if $git_type == 'foreman' {
-        git::repo { "moodle-${install_dir}":
-          target => $install_dir,
-          source => $download_url,
-          user   => $www_owner,
-          group  => $www_group,
-          mode   => '0755',
-          args   => "-b ${git_branch} --depth 2",
-        }
-      } else {
-        vcsrepo { "moodle-${install_dir}":
-          ensure   => 'latest',
-          provider => 'git',
-          path     => $install_dir,
-          source   => $download_url,
-          revision => $git_branch,
-          depth    => 1,
-          owner    => $www_owner,
-          group    => $www_group,
-        }
+      vcsrepo { "moodle-${install_dir}":
+        ensure   => 'latest',
+        provider => 'git',
+        path     => $install_dir,
+        source   => $download_url,
+        revision => $git_branch,
+        depth    => 1,
+        owner    => $www_owner,
+        group    => $www_group,
       }
       concat { "git-exclude-${install_dir}":
         path           => "${install_dir}/.git/info/exclude",
@@ -162,11 +149,7 @@ define moodle::app (
     user        => $www_owner,
   }
 
-  $repo_res = $git_type ? {
-    'foreman'  => Git::Repo["moodle-${install_dir}"],
-    default    => Vcsrepo["moodle-${install_dir}"],
-  }
-  # Git::Repo["moodle-${install_dir}"]                        ->
+  $repo_res = Vcsrepo["moodle-${install_dir}"]
   $repo_res                                                 ->
   Moodle::Plugin <| tag == "moodle-${install_dir_clean}" |> ->
   Exec["run-installer-${install_dir}"]                      ->
