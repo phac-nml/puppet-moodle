@@ -14,38 +14,37 @@
 # Copyright 2015 Your name here, unless otherwise noted.
 #
 class moodle (
-  $install_dir      = $moodle::params::install_dir,
-  $install_provider = $moodle::params::install_provider,
-  $download_base    = $moodle::params::download_base,
-  $moodle_version   = $moodle::params::moodle_version,
-  $default_lang     = $moodle::params::default_lang,
-  $wwwrooturl       = $moodle::params::wwwrooturl,
-  $www_owner        = $moodle::params::www_owner,
-  $www_group        = $moodle::params::www_group,
-  $dataroot         = $moodle::params::dataroot,
-  $create_db        = $moodle::params::create_db,
-  $create_db_user   = $moodle::params::create_db_user,
-  $dbtype           = $moodle::params::dbtype,
-  $dbhost           = $moodle::params::dbhost,
-  $dbname           = $moodle::params::dbname,
-  $dbuser           = $moodle::params::dbuser,
-  $dbpass           = $moodle::params::dbpass,
-  $dbport           = $moodle::params::dbport,
-  $dbsocket         = $moodle::params::dbsocket,
-  $prefix           = $moodle::params::prefix,
-  $fullname         = $moodle::params::fullname,
-  $shortname        = $moodle::params::shortname,
-  $summary          = $moodle::params::summary,
-  $adminuser        = $moodle::params::adminuser,
-  $adminpass        = $moodle::params::adminpass,
-  $adminemail       = $moodle::params::adminemail,
+  String $install_dir      = $moodle::params::install_dir,
+  String $install_provider = $moodle::params::install_provider,
+  String $download_base    = $moodle::params::download_base,
+  String $moodle_version   = $moodle::params::moodle_version,
+  String $default_lang     = $moodle::params::default_lang,
+  String $wwwrooturl       = $moodle::params::wwwrooturl,
+  String $www_owner        = $moodle::params::www_owner,
+  String $www_group        = $moodle::params::www_group,
+  String $dataroot         = $moodle::params::dataroot,
+  String $create_db        = $moodle::params::create_db,
+  String $create_db_user   = $moodle::params::create_db_user,
+  String $dbtype           = $moodle::params::dbtype,
+  String $dbhost           = $moodle::params::dbhost,
+  String $dbname           = $moodle::params::dbname,
+  String $dbuser           = $moodle::params::dbuser,
+  String $dbpass           = $moodle::params::dbpass,
+  String $dbport           = $moodle::params::dbport,
+  String $dbsocket         = $moodle::params::dbsocket,
+  String $prefix           = $moodle::params::prefix,
+  String $fullname         = $moodle::params::fullname,
+  String $shortname        = $moodle::params::shortname,
+  String $summary          = $moodle::params::summary,
+  String $adminuser        = $moodle::params::adminuser,
+  String $adminpass        = $moodle::params::adminpass,
+  String $adminemail       = $moodle::params::adminemail,
   Hash $plugins     = {},
 ) inherits moodle::params {
-
   # construct the download URL
   $download_url = $install_provider ? {
     'http' => "${download_base}/moodle-${moodle_version}.tgz",
-    'git'  => "${download_base}",
+    'git'  => $download_base,
   }
 
   moodle::instance { $install_dir:
@@ -76,5 +75,4 @@ class moodle (
     adminemail       => $adminemail,
     plugins          => $plugins,
   }
-
 }

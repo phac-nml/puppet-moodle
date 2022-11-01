@@ -1,31 +1,30 @@
 #
 define moodle::app (
-  $install_dir,
-  $install_provider,
-  $download_url,
-  $moodle_version,
-  $default_lang,
-  $wwwrooturl,
-  $www_owner,
-  $www_group,
-  $dataroot,
-  $dbtype,
-  $dbhost,
-  $dbname,
-  $dbuser,
-  $dbpass,
-  $dbport,
-  $dbsocket,
-  $prefix,
-  $fullname,
-  $shortname,
-  $summary,
-  $adminuser,
-  $adminpass,
-  $adminemail,
+  String $install_dir,
+  String $install_provider,
+  String $download_url,
+  String $moodle_version,
+  String $default_lang,
+  String $wwwrooturl,
+  String $www_owner,
+  String $www_group,
+  String $dataroot,
+  String $dbtype,
+  String $dbhost,
+  String $dbname,
+  String $dbuser,
+  String $dbpass,
+  String $dbport,
+  String $dbsocket,
+  String $prefix,
+  String $fullname,
+  String $shortname,
+  String $summary,
+  String $adminuser,
+  String $adminpass,
+  String $adminemail,
   Hash $plugins      = {},
 ) {
-
   $install_dir_clean = regsubst($install_dir, /\//, '_', 'G')
 
   if !($install_dir =~ /\/moodle$/) {
@@ -44,37 +43,37 @@ define moodle::app (
   case $install_provider {
     'http': {
       fail('Moodle http install not supported at this time.')
-    # # manage the staging class
-    # class { 'staging':
-    #   path  => '/var/staging',
-    # }
-    #
-    # # download the staged file
-    # staging::file { 'moodle.tgz':
-    #   source => $download_url,
-    # }
-    #
-    # # ensure that the directory
-    # if !defined(File[$install_dir]) {
-    #   file { $install_dir:
-    #     ensure => directory,
-    #     owner  => $www_owner,
-    #     group  => $www_group,
-    #     mode   => '0755',
-    #   }
-    # }
-    #
-    # # get the parent directory... the moodle distribution
-    # # gets extracted to a 'moodle' directory
-    # $install_parent = getparent($install_dir)
-    #
-    # staging::extract { 'moodle.tgz':
-    #   target  => $install_parent,
-    #   user    => $www_owner,
-    #   group   => $www_group,
-    #   creates => "${install_dir}/install.php",
-    #   require => [Staging::File['moodle.tgz'],File[$install_dir, $dataroot]],
-    # }
+# # manage the staging class
+# class { 'staging':
+#   path  => '/var/staging',
+# }
+#
+# # download the staged file
+# staging::file { 'moodle.tgz':
+#   source => $download_url,
+# }
+#
+# # ensure that the directory
+# if !defined(File[$install_dir]) {
+#   file { $install_dir:
+#     ensure => directory,
+#     owner  => $www_owner,
+#     group  => $www_group,
+#     mode   => '0755',
+#   }
+# }
+#
+# # get the parent directory... the moodle distribution
+# # gets extracted to a 'moodle' directory
+# $install_parent = getparent($install_dir)
+#
+# staging::extract { 'moodle.tgz':
+#   target  => $install_parent,
+#   user    => $www_owner,
+#   group   => $www_group,
+#   creates => "${install_dir}/install.php",
+#   require => [Staging::File['moodle.tgz'],File[$install_dir, $dataroot]],
+# }
     }
     'git': {
       $stripped_version = $moodle_version.split('\.')[0,2].join()
@@ -145,12 +144,12 @@ define moodle::app (
   }
 
   cron { "moodle-${install_dir}":
-    command     => '/usr/bin/php /var/www/moodle/admin/cli/cron.php',
-    user        => $www_owner,
+    command => '/usr/bin/php /var/www/moodle/admin/cli/cron.php',
+    user    => $www_owner,
   }
 
   $repo_res = Vcsrepo["moodle-${install_dir}"]
-  $repo_res                                                 ->
+  $repo_res  ->
   Moodle::Plugin <| tag == "moodle-${install_dir_clean}" |> ->
   Exec["run-installer-${install_dir}"]                      ->
   Exec["run-updater-${install_dir}"]                        ->

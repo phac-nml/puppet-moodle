@@ -1,10 +1,10 @@
 define moodle::db (
-  $create_db,
-  $create_db_user,
-  $dbname,
-  $dbhost,
-  $dbuser,
-  $dbpass,
+  String $create_db,
+  String $create_db_user,
+  String $dbname,
+  String $dbhost,
+  String $dbuser,
+  String $dbpass,
 ) {
   validate_bool($create_db,$create_db_user)
   validate_string($dbname,$dbhost,$dbuser,$dbpass)
@@ -27,5 +27,4 @@ define moodle::db (
       privileges => ['ALL'],
     }
   }
-
 }
