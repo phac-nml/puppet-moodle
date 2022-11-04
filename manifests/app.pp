@@ -43,37 +43,6 @@ define moodle::app (
   case $install_provider {
     'http': {
       fail('Moodle http install not supported at this time.')
-# # manage the staging class
-# class { 'staging':
-#   path  => '/var/staging',
-# }
-#
-# # download the staged file
-# staging::file { 'moodle.tgz':
-#   source => $download_url,
-# }
-#
-# # ensure that the directory
-# if !defined(File[$install_dir]) {
-#   file { $install_dir:
-#     ensure => directory,
-#     owner  => $www_owner,
-#     group  => $www_group,
-#     mode   => '0755',
-#   }
-# }
-#
-# # get the parent directory... the moodle distribution
-# # gets extracted to a 'moodle' directory
-# $install_parent = getparent($install_dir)
-#
-# staging::extract { 'moodle.tgz':
-#   target  => $install_parent,
-#   user    => $www_owner,
-#   group   => $www_group,
-#   creates => "${install_dir}/install.php",
-#   require => [Staging::File['moodle.tgz'],File[$install_dir, $dataroot]],
-# }
     }
     'git': {
       $stripped_version = $moodle_version.split('\.')[0,2].join()
