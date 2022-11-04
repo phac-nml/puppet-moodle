@@ -1,6 +1,5 @@
 #
 class moodle::params {
-
   $install_dir      = '/opt/moodle'
   $install_provider = 'git' # 'git' or 'http'
   $download_base    = $install_provider ? {
@@ -29,14 +28,13 @@ class moodle::params {
   $adminemail       = 'admin@example.com'
 
   case $::osfamily {
-      'debian': {
-        $www_owner = 'www-data'
-        $www_group = 'www-data'
-      }
-      default: {
-        $www_owner = 'root'
-        $www_group = 'root'
-      }
+    'debian': {
+      $www_owner = 'www-data'
+      $www_group = 'www-data'
+    }
+    default: {
+      $www_owner = 'root'
+      $www_group = 'root'
+    }
   }
-
 }

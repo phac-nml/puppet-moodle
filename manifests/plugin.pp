@@ -1,18 +1,17 @@
 #
 define moodle::plugin (
-  $plugin                                     = $name,
+  String $plugin                                     = $name,
   String $install_subdir,
-  $moodle_install_dir                         = $moodle::install_dir,
-  $install_provider                           = $moodle::install_provider,
+  String $moodle_install_dir                         = $moodle::install_dir,
+  String $install_provider                           = $moodle::install_provider,
   String $download_url,
-  $plugin_version                             = $moodle::moodle_version,
+  String $plugin_version                             = $moodle::moodle_version,
   Enum['moodle','branch','tag'] $version_type = 'moodle',
-  $www_owner                                  = $moodle::www_owner,
-  $www_group                                  = $moodle::www_group,
+  String $www_owner                                  = $moodle::www_owner,
+  String $www_group                                  = $moodle::www_group,
   Optional[String] $install_cmd               = undef,
   Optional[Hash] $install_exec                = undef,
 ) {
-
   $plugin_install_dir = $install_subdir ? {
     /^\//     => $install_subdir,
     default   => "${moodle_install_dir}/${install_subdir}",
@@ -72,11 +71,10 @@ define moodle::plugin (
   if $install_exec {
     exec { "moodle-plugin-${name}-exec":
       # Default to working directory = install directory; force to refresh only.
-      * => {cwd => $plugin_install_dir,} + $install_exec + {refreshonly => true,},
+      * => { cwd => $plugin_install_dir,} + $install_exec + { refreshonly => true, },
     }
     if defined(Vcsrepo["moodle-${moodle_install_dir}-${name}"]) {
       Vcsrepo["moodle-${moodle_install_dir}-${name}"] ~> Exec["moodle-plugin-${name}-exec"]
     }
   }
-
 }
