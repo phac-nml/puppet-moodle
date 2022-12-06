@@ -1,14 +1,11 @@
 define moodle::db (
-  String $create_db,
-  String $create_db_user,
+  Boolean $create_db,
+  Boolean $create_db_user,
   String $dbname,
   String $dbhost,
   String $dbuser,
   String $dbpass,
 ) {
-  validate_bool($create_db,$create_db_user)
-  validate_string($dbname,$dbhost,$dbuser,$dbpass)
-
   ## Set up DB using puppetlabs-mysql defined type
   if $create_db {
     mysql_database { "${dbhost}/${dbname}":

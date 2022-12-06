@@ -71,7 +71,7 @@ define moodle::plugin (
   if $install_exec {
     exec { "moodle-plugin-${name}-exec":
       # Default to working directory = install directory; force to refresh only.
-      * => { cwd => $plugin_install_dir,} + $install_exec + { refreshonly => true, },
+      * => { cwd => $plugin_install_dir, } + $install_exec + { refreshonly => true, },
     }
     if defined(Vcsrepo["moodle-${moodle_install_dir}-${name}"]) {
       Vcsrepo["moodle-${moodle_install_dir}-${name}"] ~> Exec["moodle-plugin-${name}-exec"]
