@@ -45,6 +45,7 @@ class moodle (
   $download_url = $install_provider ? {
     'http' => "${download_base}/moodle-${moodle_version}.tgz",
     'git'  => $download_base,
+    'github'  => $download_base,
   }
 
   moodle::instance { $install_dir:
