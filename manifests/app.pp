@@ -44,7 +44,7 @@ define moodle::app (
     'http': {
       fail('Moodle http install not supported at this time.')
     }
-    /^(git|github)$/: {
+    'git': {
       $stripped_version = $moodle_version.split('\.')[0,2].join()
       $git_branch = $moodle_version ? {
         /^\d+\.\d+$/  => "MOODLE_${stripped_version}_STABLE",

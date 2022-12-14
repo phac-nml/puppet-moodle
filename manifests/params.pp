@@ -4,8 +4,7 @@ class moodle::params {
   $install_provider = 'git' # 'git' or 'http'
   $download_base    = $install_provider ? {
     'http' => 'https://download.moodle.org/download.php/direct/stable30',
-    'git'  => 'git://git.moodle.org/moodle.git',
-    'github' => 'https://github.com/moodle/moodle.git'
+    'git'  => 'https://github.com/moodle/moodle.git'
   }
   $moodle_version   = '3.6'
   $default_lang     = 'en'
